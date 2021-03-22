@@ -1,16 +1,36 @@
-# This is a sample Python script.
+# Title: Final Project - Part 2
+# Author: Robin de Zwart, MachineLearning42
+# Date: Mar 22, 2021
+# Purpose: Processing external dataset
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+# -- Imports -- #
 
+# -- Functions -- #
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+# -- Code -- #
 
+total_input = []
+total_output = []
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+# Grab data
+file = open("SeoulBikeData.csv")
+header = file.readline()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# Read data
+for line in file:
+    data = line.strip().split(",")
+
+    rented_bikes = float(data[1])
+    total_output.append(rented_bikes)
+
+    numeric_values = []
+    for i in range(2, 11):
+        numeric_values.append(float(data[i]))
+    total_input.append(numeric_values)
+
+# Split input
+train_input = total_input[:7000]
+test_input = total_input[7000:]
+# Split output
+train_output = total_output[:7000]
+test_output = total_output[7000:]
