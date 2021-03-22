@@ -5,6 +5,8 @@
 
 # -- Imports -- #
 
+from sklearn.linear_model import LinearRegression
+
 # -- Functions -- #
 
 # -- Code -- #
@@ -34,3 +36,17 @@ test_input = total_input[7000:]
 # Split output
 train_output = total_output[:7000]
 test_output = total_output[7000:]
+
+# Train the model
+predictor = LinearRegression(n_jobs=-1)
+# predictor.fit(X=train_input, y=train_output)
+predictor.fit(X=total_input[:7000], y=total_output[:7000])
+
+# Test the model
+outcome = predictor.predict(X=test_input)
+
+
+for i in range(len(outcome)):
+    if test_output[i] != 0.0:
+        error = (abs(test_output[i] - outcome[i])) / test_output[i]
+        print("[{0}] - {1:.2f} ({2:.2f}, {3:.0f})".format(i, error*100, outcome[i], test_output[i]))
