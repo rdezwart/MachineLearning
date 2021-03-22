@@ -39,8 +39,7 @@ test_output = total_output[7000:]
 
 # Train the model
 predictor = LinearRegression(n_jobs=-1)
-# predictor.fit(X=train_input, y=train_output)
-predictor.fit(X=total_input[:7000], y=total_output[:7000])
+predictor.fit(X=train_input, y=train_output)
 
 # Test the model
 outcome = predictor.predict(X=test_input)
