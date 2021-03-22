@@ -1,16 +1,28 @@
-# This is a sample Python script.
+# Title: Final Project - Part 1
+# Author: Robin de Zwart, MachineLearning42
+# Date: Mar 19, 2021
+# Purpose: Generating a training set
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+# -- Imports -- #
+
+import random
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+# -- Functions -- #
+
+def generate_training_set(t_min, t_max):
+    ret = []
+    for i in range(100):
+        ret.append([
+            random.randint(t_min, t_max),
+            random.randint(t_min, t_max),
+            random.randint(t_min, t_max)
+        ])
+    return ret
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+# -- Code -- #
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+training_set = generate_training_set(0, 1000)
+
+print(training_set)
