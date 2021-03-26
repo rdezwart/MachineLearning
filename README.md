@@ -11,7 +11,8 @@ Placeholder.
 ### Description
 Placeholder.
 ### Example Run
-Placeholder.
+![Part 2 Example](Part2_Example.png)
+
 
 ## Part 3
 ### Description
