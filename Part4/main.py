@@ -10,7 +10,7 @@
 
 def get_file():
     while True:  # input loop
-        print("\nFile name:")
+        print("\nEnter the name of your file, including the extension. Example: 'SeoulBikeData.csv'")
         resp = input("\t> ").strip(" .!")
 
         try:
@@ -25,8 +25,10 @@ def get_confirmation(question: str):
         print("\n{0} (Yes/No)".format(question))
         resp = input("\t> ").strip(" .!").lower()
 
-        if resp == "yes" or resp == "no":
-            return resp
+        if resp == "yes" or resp == "y":
+            return "yes"
+        elif resp == "no" or resp == "n":
+            return "no"
         else:
             print("Sorry, I don't understand your answer. Please try again.")
 
@@ -104,7 +106,6 @@ def get_percent() -> tuple:
 # -- Code -- #
 
 print("\nHi there! Please copy your desired .csv file into my folder.")
-print("Next, enter the name of your file, including the extension. Example: 'SeoulBikeData.csv'")
 
 while True:  # verification loop
     file = get_file()
@@ -113,7 +114,7 @@ while True:  # verification loop
     data_file = []
     header = file.readline().strip().split(",")
     for line in file:
-        data_file.append(line)
+        data_file.append(line.strip().split(","))
 
     print("\nYour file has been processed. Please verify the following before continuing.")
     print("\tStructure: {0} columns".format(len(header)))
@@ -129,10 +130,11 @@ print("Thank you.")
 
 while True:  # input loop
     print("\nPlease indicate input columns:")
+    print("[Index] - [Name]: [Example]")
     valid_input_indexes = []
     for col in range(len(header)):
         valid_input_indexes.append(col)
-        print("\t{0:>2} - {1}".format(col, header[col]))
+        print("\t{0:>2} - {1}: {2}".format(col, header[col], data_file[0][col]))
     input_indexes = get_input_indexes(valid_input_indexes)
 
     print("Selected indexes: {0}".format(input_indexes))
@@ -140,18 +142,19 @@ while True:  # input loop
     resp_input = get_confirmation("Are these indexes correct?")
     if resp_input == "yes":
         break  # exit input loop
-    elif resp_file == "no":
+    elif resp_input == "no":
         print("Sorry, please try again.")
 
 print("Thank you.")
 
 while True:  # output loop
     print("\nPlease indicate one output column.")
+    print("[Index] - [Name]: [Example]")
     valid_output_indexes = []
     for col in range(len(header)):
         if col not in input_indexes:
             valid_output_indexes.append(col)
-            print("\t{0:>2} - {1}".format(col, header[col]))
+            print("\t{0:>2} - {1}: {2}".format(col, header[col], data_file[0][col]))
     output_index = get_output_index(valid_output_indexes)
 
     print("Selected index: {0}".format(output_index))
@@ -164,17 +167,29 @@ while True:  # output loop
 
 print("Thank you.")
 
-print("\nYour data will be split between training and testing. I recommend an 80% split.")
-print("I recommend 80%")
-data_percent: tuple = get_percent()
-data_left = round(len(data_file) * data_percent[0])
-data_right = round(len(data_file) * data_percent[1])
-print(data_percent)
+while True:
+    print("\nYour data will be split between training and testing. I recommend a value of 80%.")
+    data_percent: tuple = get_percent()
+    data_left = round(len(data_file) * data_percent[0])
+    data_right = round(len(data_file) * data_percent[1])
+
+    print("Selected split: {0}".format(data_percent))
+
+    resp_split = get_confirmation("Is this correct?")
+    if resp_split == "yes":
+        break  # exit input loop
+    elif resp_split == "no":
+        print("Sorry, please try again.")
+
+print("Thank you.")
+
 print("\nWe will use {0:.0f}% of your data for training, and {1:.0f}% for testing.".format(
     data_percent[0] * 100, data_percent[1] * 100))
 print("This results in the following split:")
 print("\t{0:>8}: {1} rows".format("Training", data_left))
-print("\t{0:>8}: {1}".format("Testing", data_right))
+print("\t{0:>8}: {1} rows".format("Testing", data_right))
 
-print(len(data_file))
-print(data_left + data_right)
+print("Enter any value to train the model and display your results.")
+resp_go = input("\t> ")
+
+# GO TIME
