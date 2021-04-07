@@ -50,24 +50,19 @@ def process_training(training: list[list[int]]) -> list[int]:
 
 # -- Code -- #
 
-# - Step 1 - #
-# Implemented in process_training()
-
-# - Step 2 - #
 # Generate input and output training data
 train_input: list[list[int]] = generate_training(0, 1000)
 train_output: list[int] = process_training(train_input)
 
-# - Step 3 - #
 # Train the machine learning model
 predictor = LinearRegression(n_jobs=-1)
 predictor.fit(X=train_input, y=train_output)
 
-# - Step 4 - #
 # Make a prediction with test data
 X_test = [[10, 20, 30]]
 outcome = predictor.predict(X=X_test)
 coefficients = predictor.coef_
+
 # Final output
 print("Prediction: " + str(outcome))
 print("Coefficients: " + str(coefficients))
