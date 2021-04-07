@@ -12,7 +12,7 @@ from sklearn.linear_model import LinearRegression
 
 # -- Functions -- #
 
-def generate_training(t_min: int, t_max: int):
+def generate_training(t_min: int, t_max: int) -> list[list[int]]:
     """
     Generates 2D array of training data, with values based on parameters.
 
@@ -30,7 +30,7 @@ def generate_training(t_min: int, t_max: int):
     return ret
 
 
-def process_training(training: list[list[int]]):
+def process_training(training: list[list[int]]) -> list[int]:
     """
     Takes 2D list of training data and applies a formula, and returns the results.
 
@@ -41,7 +41,7 @@ def process_training(training: list[list[int]]):
     """
     ret: list[int] = []
     for i in range(len(training)):
-        val = 0
+        val: int = 0
         for j in range(3):
             val += (j + 1) * training[i][j]
         ret.append(val)
@@ -55,8 +55,8 @@ def process_training(training: list[list[int]]):
 
 # - Step 2 - #
 # Generate input and output training data
-train_input = generate_training(0, 1000)
-train_output = process_training(train_input)
+train_input: list[list[int]] = generate_training(0, 1000)
+train_output: list[int] = process_training(train_input)
 
 # - Step 3 - #
 # Train the machine learning model
