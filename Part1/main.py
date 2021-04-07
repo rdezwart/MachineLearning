@@ -1,15 +1,15 @@
-# Title: Final Project - Part 1
-# Author: Robin de Zwart, MachineLearning42
+# Title: Final Project (Machine Learning for Prediction) - Part 1
+# Authors: Robin de Zwart, Veronika Tatsiy, MachineLearning42
 # Date: Mar 22, 2021
 # Purpose: Generating a training set
 
-# -- Imports -- #
+# 1. Imports 
 
 import random
 from sklearn.linear_model import LinearRegression
 
 
-# -- Functions -- #
+# 2. Generate training function 
 
 def generate_training(t_min, t_max):
     ret = []
@@ -21,6 +21,8 @@ def generate_training(t_min, t_max):
         ])
     return ret
 
+
+# 3. Process training function 
 
 def process_training(training):
     """
@@ -37,7 +39,7 @@ def process_training(training):
     return ret
 
 
-# -- Code -- #
+# 4. General code
 
 train_input = generate_training(0, 1000)
 train_output = process_training(train_input)
@@ -48,6 +50,8 @@ predictor.fit(X=train_input, y=train_output)
 X_test = [[10, 20, 30]]
 outcome = predictor.predict(X=X_test)
 coefficients = predictor.coef_
+
+# 5. Print statements 
 
 print("Prediction: " + str(outcome))
 print("Coefficients: " + str(coefficients))
