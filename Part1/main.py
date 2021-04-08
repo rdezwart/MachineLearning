@@ -50,19 +50,27 @@ def process_training(training: list[list[int]]) -> list[int]:
 
 # -- Code -- #
 
+print("PROGRESS:")
+
 # Generate input and output training data
+print("\tGenerating data...")
 train_input: list[list[int]] = generate_training(0, 1000)
 train_output: list[int] = process_training(train_input)
 
 # Train the machine learning model
+print("\tBeginning training...")
 predictor = LinearRegression(n_jobs=-1)
 predictor.fit(X=train_input, y=train_output)
 
 # Make a prediction with test data
+print("\tBeginning prediction...")
 X_test = [[10, 20, 30]]
 outcome = predictor.predict(X=X_test)
 coefficients = predictor.coef_
 
 # Final output
-print("Prediction: {0}".format(outcome))
-print("Coefficients: {0}".format(coefficients))
+print("Done!\n\nFINAL OUTPUT:")
+print("\tPrediction: {0}".format(outcome))
+print("\tCoefficients: {0}".format(coefficients))
+
+print("\nThank you for using this program, have a nice day.")
