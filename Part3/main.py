@@ -1,5 +1,5 @@
-# Title: Final Project - Part 3
-# Author: Robin de Zwart, MachineLearning42
+# Title: Final Project (Machine Learning for Prediction) - Part 3
+# Author: Robin de Zwart, Veronika Tatsiy, MachineLearning42
 # Date: Mar 24, 2021
 # Purpose: Building another model for different data
 
