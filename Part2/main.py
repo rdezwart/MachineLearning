@@ -1,7 +1,7 @@
 # Title: Final Project (Machine Learning for Prediction) - Part 2
 # Authors: Robin de Zwart, Veronika Tatsiy, MachineLearning42
-# Date: Mar 23, 2021
-# Purpose: Processing and displaying external dataset
+# Date: Apr 07, 2021
+# Purpose: Building a Model Using Real Data
 
 # -- Imports -- #
 
@@ -13,44 +13,86 @@ from sklearn.linear_model import LinearRegression
 
 # -- Functions -- #
 
-def count_results(e):
-    if 0 <= e <= 10:
+def tally_result(e_perc: float) -> None:
+    """
+    Adds 1 to corresponding dictionary entry, based on category.
+
+    :param e_perc: decimal error percentage
+    """
+    e_perc *= 100
+    if 0 <= e_perc <= 10:
         results["0-10"] += 1
-    elif 10 <= e <= 20:
+    elif 10 <= e_perc <= 20:
         results["10-20"] += 1
-    elif 20 <= e <= 30:
+    elif 20 <= e_perc <= 30:
         results["20-30"] += 1
-    elif 30 <= e <= 40:
+    elif 30 <= e_perc <= 40:
         results["30-40"] += 1
-    elif 40 <= e <= 50:
+    elif 40 <= e_perc <= 50:
         results["40-50"] += 1
-    elif 50 <= e <= 60:
+    elif 50 <= e_perc <= 60:
         results["50-60"] += 1
-    elif 60 <= e <= 70:
+    elif 60 <= e_perc <= 70:
         results["60-70"] += 1
-    elif 70 <= e <= 80:
+    elif 70 <= e_perc <= 80:
         results["70-80"] += 1
-    elif 80 <= e <= 90:
+    elif 80 <= e_perc <= 90:
         results["80-90"] += 1
-    elif 90 <= e <= 100:
+    elif 90 <= e_perc <= 100:
         results["90-100"] += 1
-    else:
+    elif 100 < e_perc:
         results["100+"] += 1
 
 
-def draw_results():
-    # Prep turtle
+def draw_results() -> None:
+    """
+    Uses a turtle to draw results, and scales output proportional to screen size.
+    """
+    # Display setup
+    s = turtle.Screen()
+    s.setup(0.75, 0.5)
+    s.setworldcoordinates(0, 0, s.window_width(), s.window_height())
+    s.colormode(255)
+
+    # Turtle setup
+    t = turtle.Turtle()
+    t.hideturtle()
+    t.speed(0)
+
+    # Display math
+    best_key = max(results, key=results.get)
+    best_perc = results[best_key] / num_valid_entries
+
+    col_gap = 12
+    col_width = (s.window_width() / (len(results) + 2)) - col_gap
+    height_mult = 1 / best_perc  # scale bars to fit window, based on highest bar
+
+    # Draw headers
+    t.pu()
+    t.setpos(s.window_width() / 2, s.window_height() - (col_gap * 3))
+    t.setheading(0)
+    t.write(
+        "Accuracy of valid predictions and their percentage of all results.",
+        align="center",
+        font=("Arial", 10, "bold")
+    )
+    t.rt(90)
+    t.forward(col_gap * 2)
+    t.write("Click anywhere to close.", align="center")
+
+    # Draw resulting graph
     t.setpos(0, col_gap * 2)
+    t.setheading(0)
     t.forward(col_width)
 
-    # Turtle, engage!
     for key in results:
         perc = results[key] / num_valid_entries
         col_height = (s.window_height() - (col_gap * 10)) * perc * height_mult
 
-        t.forward(col_gap)
-
         t.fillcolor((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+
+        t.setheading(0)
+        t.forward(col_gap)
         t.pd()
         t.begin_fill()
 
@@ -85,6 +127,9 @@ def draw_results():
 
         t.end_fill()
         t.pu()
+
+    print("Done! The final window may be minimized, so check your taskbar. :)")
+    s.exitonclick()
 
 
 # -- Code -- #
@@ -135,46 +180,13 @@ results = {
     "100+": 0
 }
 
-# results["50-60"] = 1760
-
 # Calculate performance
 num_valid_entries = 0
 for i in range(len(outcome)):
     if test_output[i] > 0:
         num_valid_entries += 1
         error = (abs(test_output[i] - outcome[i])) / test_output[i]
-        count_results(error * 100)
+        tally_result(error)
 
-# Display setup
-s = turtle.Screen()
-s.setup(0.75, 0.5)
-s.setworldcoordinates(0, 0, s.window_width(), s.window_height())
-s.colormode(255)
-
-# Turtle setup
-t = turtle.Turtle()
-t.speed(0)
-t.pu()
-t.hideturtle()
-
-# Display math
-best_key = max(results, key=results.get)
-best_perc = results[best_key] / num_valid_entries
-
-col_gap = 12
-col_width = (s.window_width() / (len(results) + 2)) - col_gap
-height_mult = 1 / best_perc  # scale bars to fit window, based on highest bar
-
+print("Drawing results...")
 draw_results()
-
-t.setpos(s.window_width() / 2, s.window_height() - (col_gap * 3))
-t.write(
-    "Number of non-zero predictions and their percentage of total non-zero results.",
-    align="center",
-    font=("Arial", 10, "bold")
-)
-t.rt(90)
-t.forward(col_gap*2)
-t.write("Click anywhere to close.", align="center")
-
-s.exitonclick()
