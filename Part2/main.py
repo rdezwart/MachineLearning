@@ -48,88 +48,102 @@ def draw_results() -> None:
     """
     Uses a turtle to draw results, and scales output proportional to screen size.
     """
-    # Display setup
-    s = turtle.Screen()
-    s.setup(0.75, 0.5)
-    s.setworldcoordinates(0, 0, s.window_width(), s.window_height())
-    s.colormode(255)
+    # noinspection PyBroadException
+    try:
+        # Display setup
+        s = turtle.Screen()
+        s.setup(0.75, 0.5)
+        s.setworldcoordinates(0, 0, s.window_width(), s.window_height())
+        s.colormode(255)
 
-    # Turtle setup
-    t = turtle.Turtle()
-    t.hideturtle()
-    t.speed(0)
+        # Turtle setup
+        t = turtle.Turtle()
+        t.hideturtle()
+        t.speed(0)
 
-    # Display math
-    best_key = max(results, key=results.get)
-    best_perc = results[best_key] / num_valid_entries
+        # Display math
+        best_key = max(results, key=results.get)
+        best_perc = results[best_key] / num_valid_entries
 
-    col_gap = 12
-    col_width = (s.window_width() / (len(results) + 2)) - col_gap
-    height_mult = 1 / best_perc  # scale bars to fit window, based on highest bar
+        col_gap = s.window_width() // 100
+        head_gap = s.window_height() // 50
+        col_width = (s.window_width() / (len(results) + 2)) - col_gap
+        height_mult = 1 / best_perc  # scale bars to fit window, based on highest bar
 
-    # Draw headers
-    t.pu()
-    t.setpos(s.window_width() / 2, s.window_height() - (col_gap * 3))
-    t.setheading(0)
-    t.write(
-        "Accuracy of valid predictions and their percentage of all results.",
-        align="center",
-        font=("Arial", 10, "bold")
-    )
-    t.rt(90)
-    t.forward(col_gap * 2)
-    t.write("Click anywhere to close.", align="center")
-
-    # Draw resulting graph
-    t.setpos(0, col_gap * 2)
-    t.setheading(0)
-    t.forward(col_width)
-
-    for key in results:
-        perc = results[key] / num_valid_entries
-        col_height = (s.window_height() - (col_gap * 10)) * perc * height_mult
-
-        t.fillcolor((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
-
+        # Draw headers
+        t.pu()
+        t.setpos(s.window_width() / 2, s.window_height() - (head_gap * 3))
         t.setheading(0)
-        t.forward(col_gap)
-        t.pd()
-        t.begin_fill()
-
-        t.lt(90)
-        t.forward(col_height)
+        t.write(
+            "Accuracy of valid (non-zero) predictions and their percentage of all results.",
+            align="center",
+            font=("Arial", 10, "bold")
+        )
         t.rt(90)
+        t.forward(head_gap * 2)
+        t.write(
+            "Total: {0}\tValid: {1}\tMissing: {2}".format(
+                len(outcome),
+                num_valid_entries,
+                len(outcome) - num_valid_entries
+            ),
+            align="center"
+        )
+        t.forward(head_gap * 2)
+        t.write("Click anywhere to close.", align="center")
 
-        t.forward(col_width / 2)
-        t.pu()
-        t.left(90)
-        t.fd(col_gap / 2)
-        t.write("{0} ({1:.2f}%)".format(results[key], perc * 100), align="center")
-        t.bk(col_gap / 2)
-        t.right(90)
-        t.pd()
-        t.forward(col_width / 2)
+        # Draw resulting graph
+        t.setpos(head_gap, col_gap * 2)
+        t.setheading(0)
+        t.forward(col_width)
 
-        t.rt(90)
-        t.forward(col_height)
-        t.lt(90)
+        for key in results:
+            perc = results[key] / num_valid_entries
+            col_height = (s.window_height() - (head_gap * 12)) * perc * height_mult
 
-        t.bk(col_width / 2)
-        t.pu()
-        t.right(90)
-        t.fd(col_gap * 2)
-        t.write("{0}".format(key), align="center")
-        t.bk(col_gap * 2)
-        t.left(90)
-        t.pd()
-        t.bk(col_width / 2)
-        t.fd(col_width)
+            t.fillcolor((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
 
-        t.end_fill()
-        t.pu()
+            t.setheading(0)
+            t.forward(col_gap)
+            t.pd()
+            t.begin_fill()
 
-    print("Done! The final window may be minimized, so check your taskbar. :)")
-    s.exitonclick()
+            t.lt(90)
+            t.forward(col_height)
+            t.rt(90)
+
+            t.forward(col_width / 2)
+            t.pu()
+            t.left(90)
+            t.fd(head_gap / 2)
+            t.write("{0} ({1:.2f}%)".format(results[key], perc * 100), align="center")
+            t.bk(head_gap / 2)
+            t.right(90)
+            t.pd()
+            t.forward(col_width / 2)
+
+            t.rt(90)
+            t.forward(col_height)
+            t.lt(90)
+
+            t.bk(col_width / 2)
+            t.pu()
+            t.right(90)
+            t.fd(head_gap * 2)
+            t.write("{0}".format(key), align="center")
+            t.bk(head_gap * 2)
+            t.left(90)
+            t.pd()
+            t.bk(col_width / 2)
+            t.fd(col_width)
+
+            t.end_fill()
+            t.pu()
+
+        print("Done! The final window may be minimized, so check your taskbar. :)")
+        s.exitonclick()
+    except Exception:
+        pass  # just here not throw errors if the user exits the window while still drawing
 
 
 # -- Code -- #
