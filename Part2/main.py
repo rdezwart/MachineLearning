@@ -1,6 +1,6 @@
 # Title: Final Project (Machine Learning for Prediction) - Part 2
 # Authors: Robin de Zwart, Veronika Tatsiy, MachineLearning42
-# Date: Apr 07, 2021
+# Date: Apr 08, 2021
 # Purpose: Building a Model Using Real Data
 
 # -- Imports -- #
@@ -134,38 +134,45 @@ def draw_results() -> None:
 
 # -- Code -- #
 
-# File vars
-file = open("SeoulBikeData.csv")
+print("PROGRESS:")
+
+# Prepare for file reading
+file = open("SeoulBikeData.csv", encoding="utf8")
 header = file.readline()
 total_input = []
 total_output = []
 
-# Read data
+# Read file and process data
+print("\tGathering data...")
 for line in file:
-    data = line.strip().split(",")
-
-    rented_bikes = float(data[1])
-    total_output.append(rented_bikes)
+    data = line.strip("\n").split(",")
 
     numeric_values = []
     for i in range(2, 11):
         numeric_values.append(float(data[i]))
     total_input.append(numeric_values)
 
-# Split input and output
-train_input = total_input[:7000]
-test_input = total_input[7000:]
-train_output = total_output[:7000]
-test_output = total_output[7000:]
+    rented_bikes = float(data[1])
+    total_output.append(rented_bikes)
 
-# Train the model
+# Split input and output
+print("\tSplitting data...")
+splitter = int(len(total_output) * 0.8)
+train_input = total_input[:splitter]
+train_output = total_output[:splitter]
+test_input = total_input[splitter:]
+test_output = total_output[splitter:]
+
+# Train the machine learning model
+print("\tBeginning training...")
 predictor = LinearRegression(n_jobs=-1)
 predictor.fit(X=train_input, y=train_output)
 
-# Test the model
+# Make a prediction with test data
+print("\tBeginning prediction...")
 outcome = predictor.predict(X=test_input)
 
-# Count performance
+# Track performance
 results = {
     "0-10": 0,
     "10-20": 0,
@@ -181,6 +188,7 @@ results = {
 }
 
 # Calculate performance
+print("\tTallying results...")
 num_valid_entries = 0
 for i in range(len(outcome)):
     if test_output[i] > 0:
@@ -188,5 +196,7 @@ for i in range(len(outcome)):
         error = (abs(test_output[i] - outcome[i])) / test_output[i]
         tally_result(error)
 
-print("Drawing results...")
-draw_results()
+# Final output
+print("\tDrawing results...")
+draw_results()  # prints when done
+print("\nThank you for using this program, have a nice day.")
