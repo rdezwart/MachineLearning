@@ -1,5 +1,5 @@
 # Title: Final Project (Machine Learning for Prediction) - Part 2
-# Author: Robin de Zwart, Veronika Tatsiy, MachineLearning42
+# Authors: Robin de Zwart, Veronika Tatsiy, MachineLearning42
 # Date: Mar 23, 2021
 # Purpose: Processing and displaying external dataset
 
