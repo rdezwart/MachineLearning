@@ -1,5 +1,5 @@
-# Title: Final Project - Part 4
-# Author: Robin de Zwart
+# Title: Final Project (Machine Learning for Prediction) - Part 4
+# Authors: Robin de Zwart, Veronika Tatsiy 
 # Date: Mar 31, 2021
 # Purpose: Interactive Model Building
 
