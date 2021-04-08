@@ -64,5 +64,5 @@ outcome = predictor.predict(X=X_test)
 coefficients = predictor.coef_
 
 # Final output
-print("Prediction: " + str(outcome))
-print("Coefficients: " + str(coefficients))
+print("Prediction: {0}".format(outcome))
+print("Coefficients: {0}".format(coefficients))
