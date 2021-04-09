@@ -44,15 +44,18 @@ def tally_result(e_perc: float) -> None:
         results["100+"] += 1
 
 
-def draw_results() -> None:
+def draw_results(win_x: float, win_y: float) -> None:
     """
     Uses a turtle to draw results, and scales output proportional to screen size.
+
+    :param win_x: window width, fraction of total monitor width
+    :param win_y: window height, fraction of total monitor height
     """
     # noinspection PyBroadException
     try:
         # Display setup
         s = turtle.Screen()
-        s.setup(0.75, 0.5)
+        s.setup(win_x, win_y)
         s.setworldcoordinates(0, 0, s.window_width(), s.window_height())
         s.colormode(255)
 
@@ -142,6 +145,13 @@ def draw_results() -> None:
             t.pu()
 
         print("Done! The final window may be minimized, so check your taskbar. :)")
+
+        if s.window_width() < 720 or s.window_height() < 300:
+            print("\nWARNING:")
+            print("\tThe display window is smaller than the recommended minimum size of 720x300.")
+            print("\tIt is currently {0}x{1}.".format(s.window_width(), s.window_height()))
+            print("\tPlease adjust the arguments of 'draw_results()' at the bottom of the file.")
+
         s.exitonclick()
     except Exception:
         pass  # just here not throw errors if the user exits the window while still drawing
@@ -213,5 +223,5 @@ for i in range(len(outcome)):
 
 # Final output
 print("\tDrawing results...")
-draw_results()  # prints when done
+draw_results(0.75, 0.5)  # prints when done
 print("\nThank you for using this program, have a nice day.")
