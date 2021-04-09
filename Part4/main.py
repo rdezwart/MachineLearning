@@ -8,26 +8,38 @@
 import random
 import time
 import turtle
+from typing import TextIO  # just here for type hinting
 
 from sklearn.linear_model import LinearRegression
 
 
 # -- Functions -- #
 
-def get_file():
+def get_file() -> TextIO:
+    """
+    Asks the user for the path of a .CSV file. Loops if an error occurs.
+
+    :return: the resulting file at the given path
+    """
     while True:  # input loop
         print("\nEnter the name of your file, including the extension. Example: 'SeoulBikeData.csv'")
         resp = input("\t> ").strip(" .!")
 
         try:
             return open(resp, encoding="utf8")  # exit input loop
-        except OSError as e:
-            print("Sorry, something went wrong: {0}".format(str(e).capitalize()))
+        except OSError as file_error:
+            print("Sorry, something went wrong: {0}".format(str(file_error).capitalize()))
             print("Please try again.")
         time.sleep(1)
 
 
-def get_confirmation(question: str):
+def get_confirmation(question: str) -> str:
+    """
+    Asks the user for a yes/no answer to a question.
+
+    :param question: prompt to ask for confirmation
+    :return: a formatted yes/no version of user's answer
+    """
     while True:  # confirmation loop
         print("\n{0} (Yes/No)".format(question))
         resp = input("\t> ").strip(" .!").lower()
@@ -41,7 +53,13 @@ def get_confirmation(question: str):
         time.sleep(1)
 
 
-def get_input_indexes(index_list):
+def get_input_indexes(valid_indexes: list[int]) -> list[int]:
+    """
+    Asks the user for a list of indexes corresponding to desired input columns.
+
+    :param valid_indexes: list of indexes that haven't already been used
+    :return: the list of selected indexes, as integers
+    """
     while True:  # input loop
         print("Enter a list of indexes, separated by commas. Example: '1, 2, 4, 5, 10'")
         resp = input("\t> ").strip(" .!")
@@ -53,24 +71,30 @@ def get_input_indexes(index_list):
                 temp_str: str = resp_list[i]
                 resp_list[i] = int(temp_str.strip())
 
-                if resp_list[i] not in index_list:
+                if resp_list[i] not in valid_indexes:
                     print("Sorry, something went wrong: Invalid index: {0}".format(resp_list[i]))
                     print("Please try again.\n")
                     break  # exit for loop, not triggering else
             else:  # if for loop finishes without breaking, the index list is OK
-                if len(resp_list) == len(index_list):
+                if len(resp_list) == len(valid_indexes):
                     print("Sorry, please select fewer indexes.")
                 else:
                     break  # exit input loop
-        except ValueError as e:
-            print("Sorry, something went wrong: {0}".format(str(e).capitalize()))
+        except ValueError as input_error:
+            print("Sorry, something went wrong: {0}".format(str(input_error).capitalize()))
             print("Please fix that index and try again.\n")
         time.sleep(1)
 
     return resp_list
 
 
-def get_output_index(index_list):
+def get_output_index(valid_indexes: list[int]) -> int:
+    """
+    Asks the user for an index corresponding to desired output column.
+
+    :param valid_indexes: list of indexes that haven't already been used
+    :return: the selected index
+    """
     while True:  # input loop
         print("Enter an index. Example: '8'")
         resp = input("\t> ").strip(" .!")
@@ -79,13 +103,13 @@ def get_output_index(index_list):
             temp_str: str = resp
             resp_int = int(temp_str)
 
-            if resp_int not in index_list:
+            if resp_int not in valid_indexes:
                 print("Sorry, something went wrong: Invalid index: {0}".format(resp_int))
                 print("Please try again.\n")
             else:
                 break  # exit input loop
-        except ValueError as e:
-            print("Sorry, something went wrong: {0}".format(str(e).capitalize()))
+        except ValueError as output_error:
+            print("Sorry, something went wrong: {0}".format(str(output_error).capitalize()))
             print("Please fix your index and try again.\n")
         time.sleep(1)
 
@@ -93,6 +117,11 @@ def get_output_index(index_list):
 
 
 def get_percent() -> tuple:
+    """
+    Asks the user for a whole percentage, corresponding to the desired training/testing split of data.
+
+    :return: the decimal values of training/testing split
+    """
     while True:  # input loop
         print("Enter a whole percentage, between 10 and 90. Example: '80' or '80%'")
         resp = input("\t> ").strip(" .!")
@@ -108,17 +137,19 @@ def get_percent() -> tuple:
             else:
                 resp_float = resp_float / 100
                 return round(resp_float, 3), round(1 - resp_float, 3)  # exit input loop
-        except ValueError as e:
-            print("Sorry, something went wrong: {0}".format(str(e).capitalize()))
+        except ValueError as percent_error:
+            print("Sorry, something went wrong: {0}".format(str(percent_error).capitalize()))
             print("Please try again.\n")
         time.sleep(1)
 
 
-def tally_result(e_perc):
+def tally_result(e_perc: float) -> None:
     """
-    Helper function for counting error margins.
-    :param e_perc: error percentage
+    Adds 1 to corresponding dictionary entry, based on category.
+
+    :param e_perc: decimal error percentage
     """
+    e_perc *= 100
     if 0 <= e_perc <= 10:
         results["0-10"] += 1
     elif 10 <= e_perc <= 20:
@@ -139,96 +170,121 @@ def tally_result(e_perc):
         results["80-90"] += 1
     elif 90 <= e_perc <= 100:
         results["90-100"] += 1
-    else:
+    elif 100 < e_perc:
         results["100+"] += 1
 
 
-def draw_results():
+def draw_results(win_x: float, win_y: float) -> None:
     """
-    Uses a turtle to draw a math, and scales output proportional to screen size.
+    Uses a turtle to draw results, and scales output proportional to screen size.
+
+    :param win_x: window width, fraction of total monitor width
+    :param win_y: window height, fraction of total monitor height
     """
-    # Display setup
-    s = turtle.Screen()
-    s.setup(0.75, 0.5)
-    s.setworldcoordinates(0, 0, s.window_width(), s.window_height())
-    s.colormode(255)
+    # noinspection PyBroadException
+    try:
+        # Display setup
+        s = turtle.Screen()
+        s.setup(win_x, win_y)
+        s.setworldcoordinates(0, 0, s.window_width(), s.window_height())
+        s.colormode(255)
 
-    # Turtle setup
-    t = turtle.Turtle()
-    t.hideturtle()
-    t.speed(0)
+        # Turtle setup
+        t = turtle.Turtle()
+        t.hideturtle()
+        t.speed(0)
 
-    # Display math
-    best_key = max(results, key=results.get)
-    best_perc = results[best_key] / num_valid_entries
+        # Display math
+        best_key = max(results, key=results.get)
+        best_perc = results[best_key] / num_valid_entries
 
-    col_gap = 12
-    col_width = (s.window_width() / (len(results) + 2)) - col_gap
-    height_mult = 1 / best_perc  # scale bars to fit window, based on highest bar
+        col_gap = s.window_width() // 100
+        col_width = (s.window_width() / (len(results) + 2)) - col_gap
+        height_mult = 1 / best_perc  # scale bars to fit window, based on highest bar
 
-    # Draw headers
-    t.pu()
-    t.setpos(s.window_width() / 2, s.window_height() - (col_gap * 3))
-    t.setheading(0)
-    t.write(
-        "Number of non-zero predictions ({0}) and their percentage of all non-zero test results.".format(data_right),
-        align="center",
-        font=("Arial", 10, "bold")
-    )
-    t.rt(90)
-    t.forward(col_gap * 2)
-    t.write("Click anywhere to close.", align="center")
-
-    # Draw resulting graph
-    t.setpos(0, col_gap * 2)
-    t.setheading(0)
-    t.forward(col_width)
-
-    for key in results:
-        perc = results[key] / num_valid_entries
-        col_height = (s.window_height() - (col_gap * 10)) * perc * height_mult
-
-        t.fillcolor((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
-
+        # Draw headers
+        t.pu()
+        t.setpos(s.window_width() / 2, s.window_height() - 30)
         t.setheading(0)
-        t.forward(col_gap)
-        t.pd()
-        t.begin_fill()
-
-        t.lt(90)
-        t.forward(col_height)
+        t.write(
+            "Accuracy of valid (non-zero) predictions and their percentage of all results.",
+            align="center",
+            font=("Arial", 10, "bold")
+        )
         t.rt(90)
+        t.forward(20)
+        t.write(
+            "Total: {0}\tValid: {1}\tMissing: {2}".format(
+                len(outcome),
+                num_valid_entries,
+                len(outcome) - num_valid_entries
+            ),
+            align="center"
+        )
+        t.forward(20)
+        t.write("Click anywhere to close.", align="center")
 
-        t.forward(col_width / 2)
-        t.pu()
-        t.left(90)
-        t.fd(col_gap / 2)
-        t.write("{0} ({1:.2f}%)".format(results[key], perc * 100), align="center")
-        t.bk(col_gap / 2)
-        t.right(90)
-        t.pd()
-        t.forward(col_width / 2)
+        # Draw resulting graph
+        t.setpos(0, 25)
+        t.setheading(0)
+        t.forward(col_width)
 
-        t.rt(90)
-        t.forward(col_height)
-        t.lt(90)
+        for key in results:
+            perc = results[key] / num_valid_entries
+            col_height = (s.window_height() - 150) * perc * height_mult
 
-        t.bk(col_width / 2)
-        t.pu()
-        t.right(90)
-        t.fd(col_gap * 2)
-        t.write("{0}".format(key), align="center")
-        t.bk(col_gap * 2)
-        t.left(90)
-        t.pd()
-        t.bk(col_width / 2)
-        t.fd(col_width)
+            t.fillcolor((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
 
-        t.end_fill()
-        t.pu()
+            t.setheading(0)
+            t.forward(col_gap)
+            t.pd()
+            t.begin_fill()
 
-    print("Done! The final window may be minimized, so check your taskbar. :)")
-    s.exitonclick()
+            t.lt(90)
+            t.forward(col_height)
+            t.rt(90)
+
+            t.forward(col_width / 2)
+            t.pu()
+            t.left(90)
+            t.fd(10)
+            t.write("({0:.2f}%)".format(perc * 100), align="center")
+            t.fd(15)
+            t.write("{0}".format(results[key]), align="center")
+            t.bk(25)
+            t.right(90)
+            t.pd()
+            t.forward(col_width / 2)
+
+            t.rt(90)
+            t.forward(col_height)
+            t.lt(90)
+
+            t.bk(col_width / 2)
+            t.pu()
+            t.right(90)
+            t.fd(25)
+            t.write("{0}".format(key), align="center")
+            t.bk(25)
+            t.left(90)
+            t.pd()
+            t.bk(col_width / 2)
+            t.fd(col_width)
+
+            t.end_fill()
+            t.pu()
+
+        print("Done! The final window may be minimized, so check your taskbar. :)")
+
+        if s.window_width() < 720 or s.window_height() < 300:
+            print("\nWARNING:")
+            print("\tThe display window is smaller than the recommended minimum size of 720x300.")
+            print("\tIt is currently {0}x{1}.".format(s.window_width(), s.window_height()))
+            print("\tPlease adjust the arguments of 'draw_results()' at the bottom of the file.")
+
+        s.exitonclick()
+    except Exception:
+        pass  # just here not throw errors if the user exits the window while still drawing
 
 
 # -- Code -- #
@@ -354,8 +410,8 @@ total_output = []
 
 for row in data_file:
     input_vals = []
-    for i in input_indexes:
-        input_vals.append(float(row[i]))
+    for input_index in input_indexes:
+        input_vals.append(float(row[input_index]))
     total_input.append(input_vals)
 
     predict_val = float(row[output_index])
@@ -365,7 +421,6 @@ print("\tSplitting data...")
 splitter = data_left
 train_input = total_input[:splitter]
 train_output = total_output[:splitter]
-
 test_input = total_input[splitter:]
 test_output = total_output[splitter:]
 
@@ -392,12 +447,12 @@ results = {
 # Calculate performance
 print("\tTallying results...")
 num_valid_entries = 0
-for i in range(len(outcome)):
-    if test_output[i] > 0:
+for input_index in range(len(outcome)):
+    if test_output[input_index] > 0:
         num_valid_entries += 1
-        error = ((abs(test_output[i] - outcome[i])) / test_output[i]) * 100
+        error = ((abs(test_output[input_index] - outcome[input_index])) / test_output[input_index]) * 100
         tally_result(error)
 
 print("\tDrawing results...")
-draw_results()  # prints when done
+draw_results(0.75, 0.5)  # prints when done
 print("\nThank you for using this program, have a nice day.")
