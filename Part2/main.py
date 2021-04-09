@@ -172,13 +172,13 @@ print("\tGathering data...")
 for line in file:
     data = line.strip("\n").split(",")
 
-    numeric_values = []
+    numeric_vals = []
     for i in range(2, 11):
-        numeric_values.append(float(data[i]))
-    total_input.append(numeric_values)
+        numeric_vals.append(float(data[i]))
+    total_input.append(numeric_vals)
 
-    rented_bikes = float(data[1])
-    total_output.append(rented_bikes)
+    predict_val = float(data[1])
+    total_output.append(predict_val)
 
 # Split input and output
 print("\tSplitting data...")
