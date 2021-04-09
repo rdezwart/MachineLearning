@@ -289,12 +289,13 @@ def draw_results(win_x: float, win_y: float) -> None:
 
 # -- Code -- #
 
+# Get file location from user
 print("\nHi there! Please copy your desired .csv file into my folder.")
-
-while True:  # verification loop
+while True:
     file = get_file()
     print("Thank you.")
 
+    # Prepare file for reading
     data_file = []
     header = file.readline().strip().split(",")
     for line in file:
@@ -305,9 +306,10 @@ while True:  # verification loop
     print("\tStructure: {0} columns".format(len(header)))
     print("\t{0:>10} {1} rows + 1 header".format("Data:", len(data_file)))
 
+    # Ask user for confirmation
     resp_file = get_confirmation("Was your file read correctly?")
     if resp_file == "yes":
-        break  # exit verification loop
+        break  # exit loop and proceed
     elif resp_file == "no":
         print("Sorry, I don't know what happened. Please double check your file and try again.")
     time.sleep(1)
@@ -315,9 +317,11 @@ while True:  # verification loop
 print("Thank you.")
 time.sleep(1)
 
-while True:  # input loop
+# Get input indexes from user
+while True:
     print("\nPlease indicate input columns:")
     print("[Index] - [Name]: [Example]")
+    # Print valid indexes
     valid_input_indexes = []
     for col in range(len(header)):
         valid_input_indexes.append(col)
@@ -326,6 +330,7 @@ while True:  # input loop
 
     print("Selected indexes: {0}".format(input_indexes))
 
+    # Make sure entries are numbers
     for index in input_indexes:
         try:
             conv = float(data_file[0][index])
@@ -334,9 +339,10 @@ while True:  # input loop
             print("Please try again.")
             break
     else:
+        # Ask user for confirmation
         resp_input = get_confirmation("Are these indexes correct?")
         if resp_input == "yes":
-            break  # exit input loop
+            break  # exit loop and proceed
         elif resp_input == "no":
             print("Sorry, please try again.")
     time.sleep(1)
@@ -344,9 +350,11 @@ while True:  # input loop
 print("Thank you.")
 time.sleep(1)
 
-while True:  # output loop
+# Get output index from user
+while True:
     print("\nPlease indicate one output column.")
     print("[Index] - [Name]: [Example]")
+    # Print valid indexes
     valid_output_indexes = []
     for col in range(len(header)):
         if col not in input_indexes:
@@ -356,12 +364,14 @@ while True:  # output loop
 
     print("Selected index: {0}".format(output_index))
 
+    # Make sure entry is a number
     try:
         conv = float(data_file[0][output_index])
 
+        # Ask user for confirmation
         resp_output = get_confirmation("Is this index correct?")
         if resp_output == "yes":
-            break  # exit input loop
+            break  # exit loop and proceed
         elif resp_output == "no":
             print("Sorry, please try again.")
     except ValueError as e:
@@ -372,6 +382,7 @@ while True:  # output loop
 print("Thank you.")
 time.sleep(1)
 
+# Get data split from user
 while True:
     print("\nYour data will be split between training and testing. I recommend a value of 80%.")
     data_percent: tuple = get_percent()
@@ -380,9 +391,10 @@ while True:
 
     print("Selected split: {0}".format(data_percent))
 
+    # Ask user for confirmation
     resp_split = get_confirmation("Is this correct?")
     if resp_split == "yes":
-        break  # exit input loop
+        break  # exit loop and proceed
     elif resp_split == "no":
         print("Sorry, please try again.")
     time.sleep(1)
@@ -390,6 +402,7 @@ while True:
 print("Thank you.")
 time.sleep(1)
 
+# Final output - info
 print("\nWe will use {0:.0f}% of your data for training, and {1:.0f}% for testing.".format(
     data_percent[0] * 100, data_percent[1] * 100))
 print("This results in the following split:")
@@ -397,17 +410,19 @@ print("\t{0:>8}: {1} rows".format("Training", data_left))
 print("\t{0:>8}: {1} rows".format("Testing", data_right))
 time.sleep(1)
 
+# Final output - confirmation
 print("\nEnter any value to train the model and display your results.")
 resp_go = input("\t> ")
 print("Here we go.")
 time.sleep(1)
 
+# Final output - progress
 print("\nPROGRESS:")
 print("\tGathering data...")
 
+# Read file and process data
 total_input = []
 total_output = []
-
 for row in data_file:
     input_vals = []
     for input_index in input_indexes:
@@ -417,6 +432,7 @@ for row in data_file:
     predict_val = float(row[output_index])
     total_output.append(predict_val)
 
+# Split input and output
 print("\tSplitting data...")
 splitter = data_left
 train_input = total_input[:splitter]
@@ -424,12 +440,16 @@ train_output = total_output[:splitter]
 test_input = total_input[splitter:]
 test_output = total_output[splitter:]
 
+# Train the machine learning model
 print("\tBeginning training...")
 predictor = LinearRegression(n_jobs=-1)
 predictor.fit(X=train_input, y=train_output)
+
+# Make a prediction with test data
 print("\tBeginning prediction...")
 outcome = predictor.predict(X=test_input)
 
+# Track performance
 results = {
     "0-10": 0,
     "10-20": 0,
@@ -453,6 +473,7 @@ for input_index in range(len(outcome)):
         error = ((abs(test_output[input_index] - outcome[input_index])) / test_output[input_index]) * 100
         tally_result(error)
 
+# Final output - drawing
 print("\tDrawing results...")
-draw_results(0.75, 0.5)  # prints when done
+draw_results(0.75, 0.5)  # modify these values if your screen is too small
 print("\nThank you for using this program, have a nice day.")

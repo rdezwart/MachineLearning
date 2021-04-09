@@ -223,5 +223,5 @@ for i in range(len(outcome)):
 
 # Final output
 print("\tDrawing results...")
-draw_results(0.75, 0.5)
+draw_results(0.75, 0.5)  # modify these values if your screen is too small
 print("\nThank you for using this program, have a nice day.")
