@@ -66,13 +66,12 @@ def draw_results() -> None:
         best_perc = results[best_key] / num_valid_entries
 
         col_gap = s.window_width() // 100
-        head_gap = s.window_height() // 50
         col_width = (s.window_width() / (len(results) + 2)) - col_gap
         height_mult = 1 / best_perc  # scale bars to fit window, based on highest bar
 
         # Draw headers
         t.pu()
-        t.setpos(s.window_width() / 2, s.window_height() - (head_gap * 3))
+        t.setpos(s.window_width() / 2, s.window_height() - 30)
         t.setheading(0)
         t.write(
             "Accuracy of valid (non-zero) predictions and their percentage of all results.",
@@ -80,7 +79,7 @@ def draw_results() -> None:
             font=("Arial", 10, "bold")
         )
         t.rt(90)
-        t.forward(head_gap * 2)
+        t.forward(20)
         t.write(
             "Total: {0}\tValid: {1}\tMissing: {2}".format(
                 len(outcome),
@@ -89,17 +88,17 @@ def draw_results() -> None:
             ),
             align="center"
         )
-        t.forward(head_gap * 2)
+        t.forward(20)
         t.write("Click anywhere to close.", align="center")
 
         # Draw resulting graph
-        t.setpos(head_gap, col_gap * 2)
+        t.setpos(0, 25)
         t.setheading(0)
         t.forward(col_width)
 
         for key in results:
             perc = results[key] / num_valid_entries
-            col_height = (s.window_height() - (head_gap * 12)) * perc * height_mult
+            col_height = (s.window_height() - 150) * perc * height_mult
 
             t.fillcolor((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
 
@@ -115,9 +114,11 @@ def draw_results() -> None:
             t.forward(col_width / 2)
             t.pu()
             t.left(90)
-            t.fd(head_gap / 2)
-            t.write("{0} ({1:.2f}%)".format(results[key], perc * 100), align="center")
-            t.bk(head_gap / 2)
+            t.fd(10)
+            t.write("({0:.2f}%)".format(perc * 100), align="center")
+            t.fd(15)
+            t.write("{0}".format(results[key]), align="center")
+            t.bk(25)
             t.right(90)
             t.pd()
             t.forward(col_width / 2)
@@ -129,9 +130,9 @@ def draw_results() -> None:
             t.bk(col_width / 2)
             t.pu()
             t.right(90)
-            t.fd(head_gap * 2)
+            t.fd(25)
             t.write("{0}".format(key), align="center")
-            t.bk(head_gap * 2)
+            t.bk(25)
             t.left(90)
             t.pd()
             t.bk(col_width / 2)
