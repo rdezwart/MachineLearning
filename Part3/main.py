@@ -158,27 +158,20 @@ def draw_results(win_x: float, win_y: float) -> None:
             t.pu()
 
         print(
-            "Done! The final window may be minimized, so check your taskbar. "
-            ":)"
-        )
+            "Done! The final window may be minimized, so check your taskbar.")
 
         # Screen size warning
         if s.window_width() < 720 or s.window_height() < 300:
             print("\nWARNING:")
             print(
                 "\tThe display window is smaller than the recommended minimum "
-                "size of 720x300."
-            )
+                "size of 720x300.")
             print(
-                "\tIt is currently {0}x{1}.".format(
-                    s.window_width(),
-                    s.window_height()
-                )
-            )
+                "\tIt is currently "
+                "{0}x{1}.".format(s.window_width(), s.window_height()))
             print(
                 "\tPlease adjust the arguments of 'draw_results()' at the "
-                "bottom of the file."
-            )
+                "bottom of the file.")
 
         s.exitonclick()
     except Exception:
