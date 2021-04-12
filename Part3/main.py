@@ -46,7 +46,7 @@ def tally_result(e_perc: float) -> None:
 
 def draw_results(win_x: float, win_y: float) -> None:
     """
-    Uses a turtle to draw results, and scales output proportional to screen size.
+    Uses a turtle to draw results and scales output proportional to screen size.
 
     :param win_x: window width, fraction of total monitor width
     :param win_y: window height, fraction of total monitor height
@@ -70,14 +70,15 @@ def draw_results(win_x: float, win_y: float) -> None:
 
         col_gap = s.window_width() // 100
         col_width = (s.window_width() / (len(results) + 2)) - col_gap
-        height_mult = 1 / best_perc  # scale bars to fit window, based on highest bar
+        height_mult = 1 / best_perc  # scale bars to fit window based on max val
 
         # Draw headers
         t.pu()
         t.setpos(s.window_width() / 2, s.window_height() - 30)
         t.setheading(0)
         t.write(
-            "Accuracy of valid (non-zero) predictions and their percentage of all results.",
+            "Accuracy of valid (non-zero) predictions and their percentage of "
+            "all results.",
             align="center",
             font=("Arial", 10, "bold")
         )
@@ -100,20 +101,29 @@ def draw_results(win_x: float, win_y: float) -> None:
         t.forward(col_width)
 
         for key in results:
+            # Get current item
             perc = results[key] / num_valid_entries
             col_height = (s.window_height() - 150) * perc * height_mult
 
-            t.fillcolor((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+            # Pick random colour
+            t.fillcolor((
+                random.randint(0, 255),
+                random.randint(0, 255),
+                random.randint(0, 255)
+            ))
 
+            # Bottom left corner of bar
             t.setheading(0)
             t.forward(col_gap)
             t.pd()
             t.begin_fill()
 
+            # Left side of bar
             t.lt(90)
             t.forward(col_height)
             t.rt(90)
 
+            # Top side of bar, plus writing
             t.forward(col_width / 2)
             t.pu()
             t.left(90)
@@ -126,10 +136,12 @@ def draw_results(win_x: float, win_y: float) -> None:
             t.pd()
             t.forward(col_width / 2)
 
+            # Right side of bar
             t.rt(90)
             t.forward(col_height)
             t.lt(90)
 
+            # Bottom side of bar, plus writing
             t.bk(col_width / 2)
             t.pu()
             t.right(90)
@@ -141,20 +153,36 @@ def draw_results(win_x: float, win_y: float) -> None:
             t.bk(col_width / 2)
             t.fd(col_width)
 
+            # Finish the shape
             t.end_fill()
             t.pu()
 
-        print("Done! The final window may be minimized, so check your taskbar. :)")
+        print(
+            "Done! The final window may be minimized, so check your taskbar. "
+            ":)"
+        )
 
+        # Screen size warning
         if s.window_width() < 720 or s.window_height() < 300:
             print("\nWARNING:")
-            print("\tThe display window is smaller than the recommended minimum size of 720x300.")
-            print("\tIt is currently {0}x{1}.".format(s.window_width(), s.window_height()))
-            print("\tPlease adjust the arguments of 'draw_results()' at the bottom of the file.")
+            print(
+                "\tThe display window is smaller than the recommended minimum "
+                "size of 720x300."
+            )
+            print(
+                "\tIt is currently {0}x{1}.".format(
+                    s.window_width(),
+                    s.window_height()
+                )
+            )
+            print(
+                "\tPlease adjust the arguments of 'draw_results()' at the "
+                "bottom of the file."
+            )
 
         s.exitonclick()
     except Exception:
-        pass  # just here not throw errors if the user exits the window while still drawing
+        pass  # Catch errors if the user exits the window while still drawing
 
 
 # -- Code -- #
