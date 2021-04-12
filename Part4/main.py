@@ -22,13 +22,17 @@ def get_file() -> TextIO:
     :return: the resulting file at the given path
     """
     while True:  # input loop
-        print("\nEnter the name of your file, including the extension. Example: 'SeoulBikeData.csv'")
+        print(
+            "\nEnter the name of your file, including the extension. "
+            "Example: 'SeoulBikeData.csv'")
         resp = input("\t> ").strip(" .!")
 
         try:
             return open(resp, encoding="utf8")  # exit input loop
         except OSError as file_error:
-            print("Sorry, something went wrong: {0}".format(str(file_error).capitalize()))
+            print(
+                "Sorry, something went wrong: "
+                "{0}".format(str(file_error).capitalize()))
             print("Please try again.")
         time.sleep(1)
 
@@ -61,7 +65,9 @@ def get_input_indexes(valid_indexes: list[int]) -> list[int]:
     :return: the list of selected indexes, as integers
     """
     while True:  # input loop
-        print("Enter a list of indexes, separated by commas. Example: '1, 2, 4, 5, 10'")
+        print(
+            "Enter a list of indexes, separated by commas. "
+            "Example: '1, 2, 4, 5, 10'")
         resp = input("\t> ").strip(" .!")
 
         resp_list: list = resp.split(",")
@@ -72,16 +78,27 @@ def get_input_indexes(valid_indexes: list[int]) -> list[int]:
                 resp_list[i] = int(temp_str.strip())
 
                 if resp_list[i] not in valid_indexes:
-                    print("Sorry, something went wrong: Invalid index: {0}".format(resp_list[i]))
+                    print(
+                        "Sorry, something went wrong: Invalid index: "
+                        "{0}".format(resp_list[i]))
                     print("Please try again.\n")
                     break  # exit for loop, not triggering else
+
+                if resp_list.count(resp_list[i]) > 1:
+                    print(
+                        "Sorry, you cannot have duplicate indexes: "
+                        "{0}".format(resp_list[i]))
+                    print("Please try again.\n")
+                    break
             else:  # if for loop finishes without breaking, the index list is OK
                 if len(resp_list) == len(valid_indexes):
                     print("Sorry, please select fewer indexes.")
                 else:
                     break  # exit input loop
         except ValueError as input_error:
-            print("Sorry, something went wrong: {0}".format(str(input_error).capitalize()))
+            print(
+                "Sorry, something went wrong: "
+                "{0}".format(str(input_error).capitalize()))
             print("Please fix that index and try again.\n")
         time.sleep(1)
 
@@ -104,12 +121,16 @@ def get_output_index(valid_indexes: list[int]) -> int:
             resp_int = int(temp_str)
 
             if resp_int not in valid_indexes:
-                print("Sorry, something went wrong: Invalid index: {0}".format(resp_int))
+                print(
+                    "Sorry, something went wrong: Invalid index: "
+                    "{0}".format(resp_int))
                 print("Please try again.\n")
             else:
                 break  # exit input loop
         except ValueError as output_error:
-            print("Sorry, something went wrong: {0}".format(str(output_error).capitalize()))
+            print(
+                "Sorry, something went wrong: "
+                "{0}".format(str(output_error).capitalize()))
             print("Please fix your index and try again.\n")
         time.sleep(1)
 
@@ -118,12 +139,15 @@ def get_output_index(valid_indexes: list[int]) -> int:
 
 def get_percent() -> tuple:
     """
-    Asks the user for a whole percentage, corresponding to the desired training/testing split of data.
+    Asks the user for a whole percentage, corresponding to the desired
+    training/testing split of data.
 
     :return: the decimal values of training/testing split
     """
     while True:  # input loop
-        print("Enter a whole percentage, between 10 and 90. Example: '80' or '80%'")
+        print(
+            "Enter a whole percentage, between 10 and 90. "
+            "Example: '80' or '80%'")
         resp = input("\t> ").strip(" .!")
 
         try:
@@ -136,9 +160,12 @@ def get_percent() -> tuple:
                 print("Sorry, that percentage is too big. Try again.")
             else:
                 resp_float = resp_float / 100
-                return round(resp_float, 3), round(1 - resp_float, 3)  # exit input loop
+                ret = (round(resp_float, 3), round(1 - resp_float, 3))
+                return ret  # exit input loop
         except ValueError as percent_error:
-            print("Sorry, something went wrong: {0}".format(str(percent_error).capitalize()))
+            print(
+                "Sorry, something went wrong: "
+                "{0}".format(str(percent_error).capitalize()))
             print("Please try again.\n")
         time.sleep(1)
 
@@ -176,7 +203,7 @@ def tally_result(e_perc: float) -> None:
 
 def draw_results(win_x: float, win_y: float) -> None:
     """
-    Uses a turtle to draw results, and scales output proportional to screen size.
+    Uses a turtle to draw results and scales output proportional to screen size.
 
     :param win_x: window width, fraction of total monitor width
     :param win_y: window height, fraction of total monitor height
@@ -200,14 +227,15 @@ def draw_results(win_x: float, win_y: float) -> None:
 
         col_gap = s.window_width() // 100
         col_width = (s.window_width() / (len(results) + 2)) - col_gap
-        height_mult = 1 / best_perc  # scale bars to fit window, based on highest bar
+        height_mult = 1 / best_perc  # scale bars to fit window based on max val
 
         # Draw headers
         t.pu()
         t.setpos(s.window_width() / 2, s.window_height() - 30)
         t.setheading(0)
         t.write(
-            "Accuracy of valid (non-zero) predictions and their percentage of all results.",
+            "Accuracy of valid (non-zero) predictions and their percentage of "
+            "all results.",
             align="center",
             font=("Arial", 10, "bold")
         )
@@ -230,20 +258,29 @@ def draw_results(win_x: float, win_y: float) -> None:
         t.forward(col_width)
 
         for key in results:
+            # Get current item
             perc = results[key] / num_valid_entries
             col_height = (s.window_height() - 150) * perc * height_mult
 
-            t.fillcolor((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+            # Pick random colour
+            t.fillcolor((
+                random.randint(0, 255),
+                random.randint(0, 255),
+                random.randint(0, 255)
+            ))
 
+            # Bottom left corner of bar
             t.setheading(0)
             t.forward(col_gap)
             t.pd()
             t.begin_fill()
 
+            # Left side of bar
             t.lt(90)
             t.forward(col_height)
             t.rt(90)
 
+            # Top side of bar, plus writing
             t.forward(col_width / 2)
             t.pu()
             t.left(90)
@@ -256,10 +293,12 @@ def draw_results(win_x: float, win_y: float) -> None:
             t.pd()
             t.forward(col_width / 2)
 
+            # Right side of bar
             t.rt(90)
             t.forward(col_height)
             t.lt(90)
 
+            # Bottom side of bar, plus writing
             t.bk(col_width / 2)
             t.pu()
             t.right(90)
@@ -271,20 +310,29 @@ def draw_results(win_x: float, win_y: float) -> None:
             t.bk(col_width / 2)
             t.fd(col_width)
 
+            # Finish the shape
             t.end_fill()
             t.pu()
 
-        print("Done! The final window may be minimized, so check your taskbar. :)")
+        print(
+            "Done! The final window may be minimized, so check your taskbar.")
 
+        # Screen size warning
         if s.window_width() < 720 or s.window_height() < 300:
             print("\nWARNING:")
-            print("\tThe display window is smaller than the recommended minimum size of 720x300.")
-            print("\tIt is currently {0}x{1}.".format(s.window_width(), s.window_height()))
-            print("\tPlease adjust the arguments of 'draw_results()' at the bottom of the file.")
+            print(
+                "\tThe display window is smaller than the recommended minimum "
+                "size of 720x300.")
+            print(
+                "\tIt is currently "
+                "{0}x{1}.".format(s.window_width(), s.window_height()))
+            print(
+                "\tPlease adjust the arguments of 'draw_results()' at the "
+                "bottom of the file.")
 
         s.exitonclick()
     except Exception:
-        pass  # just here not throw errors if the user exits the window while still drawing
+        pass  # Catch errors if the user exits the window while still drawing
 
 
 # -- Code -- #
@@ -302,7 +350,9 @@ while True:
         data_file.append(line.strip().split(","))
 
     time.sleep(1)
-    print("\nYour file has been processed. Please verify the following before continuing.")
+    print(
+        "\nYour file has been processed. "
+        "Please verify the following before continuing.")
     print("\tStructure: {0} columns".format(len(header)))
     print("\t{0:>10} {1} rows + 1 header".format("Data:", len(data_file)))
 
@@ -311,7 +361,9 @@ while True:
     if resp_file == "yes":
         break  # exit loop and proceed
     elif resp_file == "no":
-        print("Sorry, I don't know what happened. Please double check your file and try again.")
+        print(
+            "Sorry, I don't know what happened. "
+            "Please double check your file and try again.")
     time.sleep(1)
 
 print("Thank you.")
@@ -335,7 +387,9 @@ while True:
         try:
             conv = float(data_file[0][index])
         except ValueError as e:
-            print("Sorry, something went wrong: {0}".format(str(e).capitalize()))
+            print(
+                "Sorry, something went wrong: "
+                "{0}".format(str(e).capitalize()))
             print("Please try again.")
             break
     else:
@@ -359,7 +413,8 @@ while True:
     for col in range(len(header)):
         if col not in input_indexes:
             valid_output_indexes.append(col)
-            print("\t{0:>2} - {1}: {2}".format(col, header[col], data_file[0][col]))
+            print("\t{0:>2} - {1}: {2}".format(
+                col, header[col], data_file[0][col]))
     output_index = get_output_index(valid_output_indexes)
 
     print("Selected index: {0}".format(output_index))
@@ -384,7 +439,9 @@ time.sleep(1)
 
 # Get data split from user
 while True:
-    print("\nYour data will be split between training and testing. I recommend a value of 80%.")
+    print(
+        "\nYour data will be split between training and testing. "
+        "I recommend a value of 80%.")
     data_percent: tuple = get_percent()
     data_left = round(len(data_file) * data_percent[0])
     data_right = round(len(data_file) * data_percent[1])
@@ -403,8 +460,9 @@ print("Thank you.")
 time.sleep(1)
 
 # Final output - info
-print("\nWe will use {0:.0f}% of your data for training, and {1:.0f}% for testing.".format(
-    data_percent[0] * 100, data_percent[1] * 100))
+print(
+    "\nWe will use {0:.0f}% of your data for training, and {1:.0f}% for "
+    "testing.".format(data_percent[0] * 100, data_percent[1] * 100))
 print("This results in the following split:")
 print("\t{0:>8}: {1} rows".format("Training", data_left))
 print("\t{0:>8}: {1} rows".format("Testing", data_right))
@@ -470,7 +528,8 @@ num_valid_entries = 0
 for input_index in range(len(outcome)):
     if test_output[input_index] > 0:
         num_valid_entries += 1
-        error = ((abs(test_output[input_index] - outcome[input_index])) / test_output[input_index]) * 100
+        error = ((abs(test_output[input_index] - outcome[input_index])) /
+                 test_output[input_index])
         tally_result(error)
 
 # Final output - drawing
