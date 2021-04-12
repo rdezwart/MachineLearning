@@ -32,7 +32,7 @@ def generate_training(t_min: int, t_max: int) -> list[list[int]]:
 
 def process_training(training: list[list[int]]) -> list[int]:
     """
-    Takes 2D list of training data and applies a formula, and returns the results.
+    Takes 2D list of training data, applies a formula, and returns the results.
 
     Formula: y = (1 * x1) + (2 * x2) + (3 * x3)
 
