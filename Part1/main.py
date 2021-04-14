@@ -1,6 +1,6 @@
 # Title: Final Project (Machine Learning for Prediction) - Part 1
-# Authors: Robin de Zwart, Veronika Tatsiy, MachineLearning42
-# Date: Apr 12, 2021
+# Authors: Robin de Zwart & Veronika Tatsiy (MachineLearning42)
+# Date: Apr 14, 2021
 # Purpose: Building our first Machine Learning Model
 
 # -- Imports -- #
@@ -20,6 +20,7 @@ def generate_training(t_min: int, t_max: int) -> list[list[int]]:
     :param int t_max: maximum value for training data
     :return: list of lists containing three integers
     """
+
     ret: list[list[int]] = []
     for i in range(100):
         ret.append([
@@ -39,6 +40,7 @@ def process_training(training: list[list[int]]) -> list[int]:
     :param training: raw training data
     :return: processed training data
     """
+
     ret: list[int] = []
     for i in range(len(training)):
         val: int = 0

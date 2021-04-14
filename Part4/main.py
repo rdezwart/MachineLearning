@@ -1,6 +1,6 @@
 # Title: Final Project (Machine Learning for Prediction) - Part 4
-# Authors: Robin de Zwart, Veronika Tatsiy, MachineLearning42
-# Date: Apr 12, 2021
+# Authors: Robin de Zwart & Veronika Tatsiy (MachineLearning42)
+# Date: Apr 14, 2021
 # Purpose: Interactive Model Building
 
 # -- Imports -- #
@@ -21,6 +21,7 @@ def get_file() -> TextIO:
 
     :return: the resulting file at the given path
     """
+
     while True:  # input loop
         print(
             "\nEnter the name of your file, including the extension. "
@@ -44,6 +45,7 @@ def get_confirmation(question: str) -> str:
     :param question: prompt to ask for confirmation
     :return: a formatted yes/no version of user's answer
     """
+
     while True:  # confirmation loop
         print("\n{0} (Yes/No)".format(question))
         resp = input("\t> ").strip(" .!").lower()
@@ -64,6 +66,7 @@ def get_input_indexes(valid_indexes: list[int]) -> list[int]:
     :param valid_indexes: list of indexes that haven't already been used
     :return: the list of selected indexes, as integers
     """
+
     while True:  # input loop
         print(
             "Enter a list of indexes, separated by commas. "
@@ -112,6 +115,7 @@ def get_output_index(valid_indexes: list[int]) -> int:
     :param valid_indexes: list of indexes that haven't already been used
     :return: the selected index
     """
+
     while True:  # input loop
         print("Enter an index. Example: '8'")
         resp = input("\t> ").strip(" .!")
@@ -144,6 +148,7 @@ def get_percent() -> tuple:
 
     :return: the decimal values of training/testing split
     """
+
     while True:  # input loop
         print(
             "Enter a whole percentage, between 10 and 90. "
@@ -176,6 +181,7 @@ def tally_result(e_perc: float) -> None:
 
     :param e_perc: decimal error percentage
     """
+
     e_perc *= 100
     if 0 <= e_perc <= 10:
         results["0-10"] += 1
@@ -208,6 +214,7 @@ def draw_results(win_x: float, win_y: float) -> None:
     :param win_x: window width, fraction of total monitor width
     :param win_y: window height, fraction of total monitor height
     """
+
     # noinspection PyBroadException
     try:
         # Display setup

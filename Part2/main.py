@@ -1,6 +1,6 @@
 # Title: Final Project (Machine Learning for Prediction) - Part 2
-# Authors: Robin de Zwart, Veronika Tatsiy, MachineLearning42
-# Date: Apr 12, 2021
+# Authors: Robin de Zwart & Veronika Tatsiy (MachineLearning42)
+# Date: Apr 14, 2021
 # Purpose: Building a Model Using Real Data
 
 # -- Imports -- #
@@ -19,6 +19,7 @@ def tally_result(e_perc: float) -> None:
 
     :param e_perc: decimal error percentage
     """
+
     e_perc *= 100
     if 0 <= e_perc <= 10:
         results["0-10"] += 1
@@ -51,6 +52,7 @@ def draw_results(win_x: float, win_y: float) -> None:
     :param win_x: window width, fraction of total monitor width
     :param win_y: window height, fraction of total monitor height
     """
+
     # noinspection PyBroadException
     try:
         # Display setup
